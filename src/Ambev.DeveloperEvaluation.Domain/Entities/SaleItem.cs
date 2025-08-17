@@ -17,18 +17,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             Product = product;
             Quantity = quantity;
-            Discount = CalculateDiscount(quantity, Product.ProductPrice);
-        }
-
-        /// <summary>
-        /// Return discount based on quantity and price.
-        /// </summary>
-        /// <param name="quantity"></param>
-        /// <param name="price"></param>
-        /// <returns></returns>
-        private decimal CalculateDiscount(int quantity, decimal price)
-        {
-            throw new NotImplementedException("Discount calculation logic is not implemented yet.");
         }
     }
 }

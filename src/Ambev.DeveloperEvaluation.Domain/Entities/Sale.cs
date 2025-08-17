@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         public decimal TotalAmount => _items.Sum(x => x.Total);
 
-        protected Sale() { }
+        public Sale() { }
 
         public Sale(string saleNumber, DateTime date, CustomerExternalIdentity customer, BranchExternalIdentity branch)
         {
