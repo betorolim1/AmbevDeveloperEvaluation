@@ -5,11 +5,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
     public class SaleItem
     {
         public Guid Id { get; private set; }
+        public Guid SaleId { get; private set; }
         public ProductExternalIdentity Product { get; private set; }
         public int Quantity { get; private set; }
-        public decimal UnitPrice => Product.UnitPrice;
         public decimal Discount { get; private set; }
-        public decimal Total => (UnitPrice * Quantity) - Discount;
+        public decimal Total => (Product.ProductPrice * Quantity) - Discount;
 
         protected SaleItem() { }
 
@@ -17,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             Product = product;
             Quantity = quantity;
-            Discount = CalculateDiscount(quantity, UnitPrice);
+            Discount = CalculateDiscount(quantity, Product.ProductPrice);
         }
 
         /// <summary>

@@ -3,6 +3,6 @@
     public class BranchExternalIdentity
     {
         public Guid BranchId { get; set; }
-        public string Description { get; set; }
+        public string BranchName { get; set; }
     }
 }
