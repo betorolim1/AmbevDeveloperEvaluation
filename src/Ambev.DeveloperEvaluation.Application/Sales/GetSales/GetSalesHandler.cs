@@ -68,6 +68,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
             return request.OrderBy?.ToLower() switch
             {
                 "salenumber" => request.Descending ? query.OrderByDescending(s => s.SaleNumber) : query.OrderBy(s => s.SaleNumber),
+                "branchname" => request.Descending ? query.OrderByDescending(s => s.Branch.BranchName) : query.OrderBy(s => s.Branch.BranchName),
                 _ => request.Descending ? query.OrderByDescending(s => s.Date) : query.OrderBy(s => s.Date)
             };
         }

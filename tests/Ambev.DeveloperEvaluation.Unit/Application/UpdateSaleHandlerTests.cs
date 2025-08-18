@@ -37,7 +37,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             var cancellationToken = CancellationToken.None;
             var command = UpdateSaleHandlerTestData.GenerateValidCommand();
 
-            var sale = UpdateSaleHandlerTestData.GenerateValidSale();
+            var sale = SaleTestData.GenerateValidSale();
             sale.Cancelled = command.Cancelled;
             sale.Id = command.Id;
 

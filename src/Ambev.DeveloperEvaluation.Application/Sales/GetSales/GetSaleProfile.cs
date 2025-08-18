@@ -3,7 +3,7 @@ using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
 {
-    internal class GetSaleProfile : Profile
+    public class GetSaleProfile : Profile
     {
         public GetSaleProfile()
         {
