@@ -1,6 +1,8 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,11 +32,36 @@ public class SalesController : BaseController
         var command = _mapper.Map<CreateSaleCommand>(request);
         var result = await _mediator.Send(command, cancellationToken);
 
-        return Created(string.Empty, new ApiResponseWithData<CreateSaleResult>
+        return Created(string.Empty, new ApiResponseWithData<CreateSaleResponse>
         {
             Success = true,
             Message = "Sale created successfully",
-            Data = result
+            Data = _mapper.Map<CreateSaleResponse>(result)
+        });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateSale([FromRoute] Guid id, [FromBody] UpdateSaleRequest request, CancellationToken cancellationToken)
+    {
+        if (id == Guid.Empty)
+            return BadRequest("Sale ID cannot be empty.");
+
+        var validator = new UpdateSaleRequestValidator();
+        var valResult = await validator.ValidateAsync(request);
+
+        if (!valResult.IsValid)
+            return BadRequest(valResult.Errors);
+
+        var command = _mapper.Map<UpdateSaleCommand>(request);
+        command.Id = id;
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponseWithData<UpdateSaleResponse>
+        {
+            Success = true,
+            Message = "Sale updated successfully",
+            Data = _mapper.Map<UpdateSaleResponse>(result)
         });
     }
 }

@@ -17,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
                    .HasMaxLength(50);
 
             builder.Property(x => x.Date)
-                   .HasColumnType("timestamptz")
+                   .HasColumnType("timestamp")
                    .IsRequired();
 
             builder.Property(x => x.Cancelled)

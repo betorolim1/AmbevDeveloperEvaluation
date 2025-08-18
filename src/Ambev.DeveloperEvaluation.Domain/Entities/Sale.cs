@@ -36,7 +36,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             _items.Add(item);
         }
 
-        public void Cancel() => Cancelled = true;
+        public void SetCancelled(bool cancelled) => Cancelled = cancelled;
+
+        public void ClearItems()
+        {
+            _items.Clear();
+        }
 
         public ValidationResultDetail Validate()
         {

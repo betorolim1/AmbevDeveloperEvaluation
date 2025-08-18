@@ -47,17 +47,19 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             Assert.Equal(40.0m, totalAmount);
         }
 
-        [Fact(DisplayName = "Sale should be cancelled correctly")]
-        public void Given_Sale_When_Cancelled_Then_ShouldSetCancelledFlag()
+        [Theory(DisplayName = "Sale should be cancelled correctly")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Given_Sale_When_Cancelled_Then_ShouldSetCancelledFlag(bool cancelled)
         {
             // Arrange
             var sale = SaleTestData.GenerateValidSale();
 
             // Act
-            sale.Cancel();
+            sale.SetCancelled(cancelled);
 
             // Assert
-            Assert.True(sale.Cancelled);
+            Assert.Equal(cancelled, sale.Cancelled);
         }
 
         [Fact(DisplayName = "Sale should validate correctly with valid data")]
