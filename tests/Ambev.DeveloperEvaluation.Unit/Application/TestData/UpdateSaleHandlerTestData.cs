@@ -1,4 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
 using Bogus;
 
 namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
@@ -19,9 +21,30 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
             })
             .RuleFor(u => u.Cancelled, f => f.Random.Bool());
 
+        private static readonly Faker<Sale> saleFaker = new Faker<Sale>()
+            .RuleFor(s => s.Id, f => f.Random.Guid())
+            .RuleFor(s => s.SaleNumber, f => f.Commerce.Ean13())
+            .RuleFor(s => s.Date, f => f.Date.Past(1))
+            .RuleFor(s => s.Customer, f => new CustomerExternalIdentity
+            {
+                CustomerId = f.Random.Guid(),
+                CustomerName = f.Name.FullName()
+            })
+            .RuleFor(s => s.Branch, f => new BranchExternalIdentity
+            {
+                BranchId = f.Random.Guid(),
+                BranchName = f.Company.CompanyName()
+            })
+            .RuleFor(s => s.Cancelled, f => f.Random.Bool());
+
         public static UpdateSaleCommand GenerateValidCommand()
         {
             return updateSaleHandlerFaker.Generate();
+        }
+
+        public static Sale GenerateValidSale()
+        {
+            return saleFaker.Generate();
         }
 
         public static UpdateSaleCommand GenerateInvalidCommand()

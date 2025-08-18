@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Validation.Helper;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -23,7 +24,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             if (sale is null)
                 throw new ValidationException("Sale not found");
 
-            sale.SetCancelled(command.Cancelled);
+            sale.Cancelled = command.Cancelled;
 
             sale.ClearItems();
 
@@ -33,6 +34,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 
                 sale.AddItem(externalProduct, itemCommand.Quantity);
             }
+
+            var saleValidationResult = sale.Validate();
+
+            if (!saleValidationResult.IsValid)
+                throw new ValidationException(ValidationHelper.GetValidationFailures(saleValidationResult));
 
             await _saleRepository.UpdateAsync(sale, cancellationToken);
 

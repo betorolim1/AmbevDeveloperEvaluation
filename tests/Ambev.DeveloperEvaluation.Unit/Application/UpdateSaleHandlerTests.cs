@@ -37,7 +37,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             var cancellationToken = CancellationToken.None;
             var command = UpdateSaleHandlerTestData.GenerateValidCommand();
 
-            var sale = new Sale(id: command.Id, cancelled: command.Cancelled);
+            var sale = UpdateSaleHandlerTestData.GenerateValidSale();
+            sale.Cancelled = command.Cancelled;
+            sale.Id = command.Id;
 
             _saleRepository.GetByIdAsync(command.Id, cancellationToken).Returns(sale);
 

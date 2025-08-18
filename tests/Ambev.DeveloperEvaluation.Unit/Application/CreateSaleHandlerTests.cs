@@ -47,21 +47,24 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 ProductPrice = command.Items[0].ProductPrice
             };
 
-            var saleWithItems = new Sale(saleNumber: command.SaleNumber,
-                                date: command.Date,
-                                customer:
-                                new CustomerExternalIdentity
-                                {
-                                    CustomerId = command.CustomerId,
-                                    CustomerName = command.CustomerName
-                                },
-                                branch:
-                                new BranchExternalIdentity
-                                {
-                                    BranchId = command.BranchId,
-                                    BranchName = command.BranchName
-                                },
-                                cancelled: command.Cancelled);
+            var saleWithItems = new Sale
+            {
+                SaleNumber = command.SaleNumber,
+                Date = command.Date,
+                Customer =
+                    new CustomerExternalIdentity
+                    {
+                        CustomerId = command.CustomerId,
+                        CustomerName = command.CustomerName
+                    },
+                Branch =
+                    new BranchExternalIdentity
+                    {
+                        BranchId = command.BranchId,
+                        BranchName = command.BranchName
+                    },
+                Cancelled = command.Cancelled
+            };
             saleWithItems.AddItem(productExternalIdentity, command.Items[0].Quantity);
 
             _saleRepository.CreateAsync(Arg.Is<Sale>(x =>

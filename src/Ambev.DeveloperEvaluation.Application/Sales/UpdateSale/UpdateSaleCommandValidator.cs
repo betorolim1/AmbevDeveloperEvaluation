@@ -1,14 +1,12 @@
 ﻿using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 {
-    public class CreateSaleCommandValidator : AbstractValidator<CreateSaleCommand>
+    public class UpdateSaleCommandValidator : AbstractValidator<UpdateSaleCommand>
     {
-        public CreateSaleCommandValidator()
+        public UpdateSaleCommandValidator()
         {
-            RuleFor(x => x.SaleNumber).NotEmpty();
-            RuleFor(x => x.CustomerId).NotEmpty();
-            RuleFor(x => x.BranchId).NotEmpty();
+            RuleFor(c => c.Id).NotEmpty();
             RuleFor(c => c.Items).NotNull().Must(items => items.Count > 0);
             RuleForEach(x => x.Items).ChildRules(items =>
             {
@@ -16,6 +14,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 items.RuleFor(i => i.Quantity).GreaterThan(0).LessThanOrEqualTo(20);
                 items.RuleFor(i => i.ProductPrice).GreaterThan(0);
             });
+            // TODO: Reuse Items validation from CreateSaleCommandValidator
         }
     }
 }
