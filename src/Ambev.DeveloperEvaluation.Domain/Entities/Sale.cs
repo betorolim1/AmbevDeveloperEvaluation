@@ -30,6 +30,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             Cancelled = cancelled;
         }
 
+        public Sale(Guid id, bool cancelled)
+        {
+            Id = id;
+            Cancelled = cancelled;
+        }
+
         public void AddItem(ProductExternalIdentity product, int quantity)
         {
             var item = new SaleItem(product, quantity);

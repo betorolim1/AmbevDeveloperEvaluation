@@ -26,6 +26,21 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             Assert.False(sale.Cancelled);
         }
 
+        [Fact(DisplayName = "Sale should be created with update constructor")]
+        public void Given_ValidSaleData_When_CreatedWithUpdateConstructor_Then_ShouldReturnValidSale()
+        {
+            // Arrange
+            var sale = SaleTestData.GenerateValidSale();
+
+            // Act
+            var updatedSale = new Sale(sale.Id, sale.Cancelled);
+
+            // Assert
+            Assert.NotNull(updatedSale);
+            Assert.Equal(sale.Id, updatedSale.Id);
+            Assert.Equal(sale.Cancelled, updatedSale.Cancelled);
+        }
+
         [Fact(DisplayName = "Sale should return correct total amount after adding items")]
         public void Given_SaleWithItems_When_CalculatingTotal_Then_ShouldReturnCorrectTotalAmount()
         {
@@ -88,6 +103,23 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             // Assert
             Assert.False(validationResult.IsValid);
             Assert.NotEmpty(validationResult.Errors);
+        }
+
+        [Fact(DisplayName = "Sale should clear items correctly")]
+        public void Given_SaleWithItems_When_Cleared_Then_ShouldRemoveAllItems()
+        {
+            // Arrange
+            var sale = SaleTestData.GenerateValidSale();
+
+            var product = ProductExternalIdentityTestData.GenerateValidProductExternalIdentity();
+
+            sale.AddItem(product, 1);
+
+            // Act
+            sale.ClearItems();
+
+            // Assert
+            Assert.Empty(sale.Items);
         }
     }
 }

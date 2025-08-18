@@ -3,7 +3,7 @@ using Bogus;
 
 namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
 {
-    public class CreateSaleHandlerTestData
+    public static class CreateSaleHandlerTestData
     {
         private static readonly Faker<CreateSaleCommand> createSaleHandlerFaker = new Faker<CreateSaleCommand>()
             .RuleFor(u => u.SaleNumber, f => f.Commerce.Ean13())
