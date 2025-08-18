@@ -14,7 +14,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSaleById
             CreateMap<SaleItem, GetSaleByIdItemResult>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.ProductId))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.Product.ProductPrice));
+                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.Product.ProductPrice));
         }
     }
 }
