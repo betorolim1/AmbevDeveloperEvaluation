@@ -14,7 +14,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             var sale = new Sale(saleNumber: "1234567890123",
                                 date: dateNow,
                                 customer: CustomerExternalIdentityTestData.GenerateValidCustomerExternalIdentity(),
-                                branch: BranchExternalIdentityTestData.GenerateValidBranchExternalIdentity());
+                                branch: BranchExternalIdentityTestData.GenerateValidBranchExternalIdentity(),
+                                cancelled: false);
 
             Assert.NotNull(sale);
             Assert.NotEqual(Guid.Empty, sale.Id);
@@ -57,6 +58,34 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
 
             // Assert
             Assert.True(sale.Cancelled);
+        }
+
+        [Fact(DisplayName = "Sale should validate correctly with valid data")]
+        public void Given_ValidSaleData_When_Validated_Then_ShouldReturnValidResult()
+        {
+            // Arrange
+            var sale = SaleTestData.GenerateValidSale();
+
+            // Act
+            var validationResult = sale.Validate();
+
+            // Assert
+            Assert.True(validationResult.IsValid);
+            Assert.Empty(validationResult.Errors);
+        }
+
+        [Fact(DisplayName = "Sale should validate correctly with invalid data")]
+        public void Given_InvalidSaleData_When_Validated_Then_ShouldReturnInvalidResult()
+        {
+            // Arrange
+            var sale = new Sale("", DateTime.Now, null, null, false);
+
+            // Act
+            var validationResult = sale.Validate();
+
+            // Assert
+            Assert.False(validationResult.IsValid);
+            Assert.NotEmpty(validationResult.Errors);
         }
     }
 }

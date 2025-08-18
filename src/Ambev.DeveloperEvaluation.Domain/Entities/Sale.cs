@@ -20,14 +20,14 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         public Sale() { }
 
-        public Sale(string saleNumber, DateTime date, CustomerExternalIdentity customer, BranchExternalIdentity branch)
+        public Sale(string saleNumber, DateTime date, CustomerExternalIdentity customer, BranchExternalIdentity branch, bool cancelled)
         {
             Id = Guid.NewGuid();
             SaleNumber = saleNumber;
             Date = date;
             Customer = customer;
             Branch = branch;
-            Cancelled = false;
+            Cancelled = cancelled;
         }
 
         public void AddItem(ProductExternalIdentity product, int quantity)
