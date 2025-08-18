@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.PageResult;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSaleById;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
@@ -108,6 +109,19 @@ public class SalesController : BaseController
             Success = true,
             Message = "Sale retrieved successfully",
             Data = response
+        });
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteSale([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var command = new DeleteSaleCommand { Id = id };
+        await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponse
+        {
+            Success = true,
+            Message = "Sale deleted successfully"
         });
     }
 }
