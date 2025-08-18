@@ -33,5 +33,14 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             await _context.SaveChangesAsync(cancellationToken);
             return sale;
         }
+
+        public async Task<List<Sale>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Sales
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public IQueryable<Sale> Query() => _context.Sales.Include(s => s.Customer).Include(s => s.Branch);
     }
 }

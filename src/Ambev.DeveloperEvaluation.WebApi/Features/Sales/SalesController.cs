@@ -1,11 +1,15 @@
-﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+﻿using Ambev.DeveloperEvaluation.Application.PageResult;
+using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSales;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -62,6 +66,29 @@ public class SalesController : BaseController
             Success = true,
             Message = "Sale updated successfully",
             Data = _mapper.Map<UpdateSaleResponse>(result)
+        });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponseWithData<List<GetSalesResponse>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSales([FromQuery] GetSalesRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetSalesCommand>(request);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        var response = _mapper.Map<List<GetSalesResponse>>(result.Items);
+
+        return Ok(new ApiResponseWithData<PagedResult<GetSalesResponse>>
+        {
+            Success = true,
+            Message = "Sales retrieved successfully",
+            Data = new PagedResult<GetSalesResponse>
+            {
+                Items = response,
+                CurrentPage = result.CurrentPage,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems
+            }
         });
     }
 }
