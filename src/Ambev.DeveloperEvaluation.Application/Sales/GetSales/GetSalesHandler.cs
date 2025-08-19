@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.PageResult;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using FluentValidation;
@@ -65,10 +66,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
 
         private IQueryable<Sale> GetOrderBy(IQueryable<Sale> query, GetSalesCommand request)
         {
-            return request.OrderBy?.ToLower() switch
+            return request.OrderBy switch
             {
-                "salenumber" => request.Descending ? query.OrderByDescending(s => s.SaleNumber) : query.OrderBy(s => s.SaleNumber),
-                "branchname" => request.Descending ? query.OrderByDescending(s => s.Branch.BranchName) : query.OrderBy(s => s.Branch.BranchName),
+                SalesOrderBy.SaleNumber => request.Descending ? query.OrderByDescending(s => s.SaleNumber) : query.OrderBy(s => s.SaleNumber),
+                SalesOrderBy.BranchName => request.Descending ? query.OrderByDescending(s => s.Branch.BranchName) : query.OrderBy(s => s.Branch.BranchName),
                 _ => request.Descending ? query.OrderByDescending(s => s.Date) : query.OrderBy(s => s.Date)
             };
         }

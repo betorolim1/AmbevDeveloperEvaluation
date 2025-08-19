@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.PageResult;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
@@ -14,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
 
-        public string? OrderBy { get; set; } = "Date";
+        public SalesOrderBy OrderBy { get; set; } = SalesOrderBy.Date;
         public bool Descending { get; set; } = true;
     }
 }

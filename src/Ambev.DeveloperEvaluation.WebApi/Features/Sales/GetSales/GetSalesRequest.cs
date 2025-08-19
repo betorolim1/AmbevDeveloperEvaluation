@@ -1,4 +1,6 @@
-﻿namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSales
+﻿using Ambev.DeveloperEvaluation.Domain.Enums;
+
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSales
 {
     public class GetSalesRequest
     {
@@ -11,7 +13,7 @@
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
 
-        public string? OrderBy { get; set; } = "Date";
+        public SalesOrderBy OrderBy { get; set; } = SalesOrderBy.Date;
         public bool Descending { get; set; } = true;
     }
 }

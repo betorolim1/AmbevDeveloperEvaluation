@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
@@ -336,7 +337,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             {
                 PageNumber = 1,
                 PageSize = 10,
-                OrderBy = "Date",
+                OrderBy = SalesOrderBy.Date,
                 Descending = true
             };
 
@@ -380,7 +381,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             {
                 PageNumber = 1,
                 PageSize = 10,
-                OrderBy = "salenumber",
+                OrderBy = SalesOrderBy.SaleNumber,
                 Descending = true
             };
 
@@ -424,7 +425,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             {
                 PageNumber = 1,
                 PageSize = 10,
-                OrderBy = "branchname",
+                OrderBy = SalesOrderBy.BranchName,
                 Descending = true
             };
 
