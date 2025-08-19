@@ -42,11 +42,25 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
 
             var command = CreateSaleHandlerTestData.GenerateValidCommand();
 
-            var productExternalIdentity = new ProductExternalIdentity
+            var productExternalIdentity1 = new ProductExternalIdentity
             {
                 ProductId = command.Items[0].ProductId,
                 ProductName = command.Items[0].ProductName,
                 ProductPrice = command.Items[0].ProductPrice
+            };
+
+            var productExternalIdentity2 = new ProductExternalIdentity
+            {
+                ProductId = command.Items[1].ProductId,
+                ProductName = command.Items[1].ProductName,
+                ProductPrice = command.Items[1].ProductPrice
+            };
+
+            var productExternalIdentity3 = new ProductExternalIdentity
+            {
+                ProductId = command.Items[2].ProductId,
+                ProductName = command.Items[2].ProductName,
+                ProductPrice = command.Items[2].ProductPrice
             };
 
             var saleWithItems = new Sale
@@ -66,7 +80,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                     },
                 Cancelled = command.Cancelled
             };
-            saleWithItems.AddItem(productExternalIdentity, command.Items[0].Quantity);
+            saleWithItems.AddItem(productExternalIdentity1, command.Items[0].Quantity);
+            saleWithItems.AddItem(productExternalIdentity2, command.Items[1].Quantity);
+            saleWithItems.AddItem(productExternalIdentity3, command.Items[2].Quantity);
 
             _saleRepository.CreateAsync(Arg.Is<Sale>(x =>
                 x.Cancelled == command.Cancelled &&
@@ -75,7 +91,14 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 x.Customer.CustomerId == command.CustomerId &&
                 x.Customer.CustomerName == command.CustomerName &&
                 x.Branch.BranchId == command.BranchId &&
-                x.Branch.BranchName == command.BranchName
+                x.Branch.BranchName == command.BranchName &&
+                x.Items.Count == command.Items.Count &&
+                x.Items.First().Total == 20 &&
+                x.Items.First().Discount == 0 &&
+                x.Items.ElementAt(1).Total == 450 &&
+                x.Items.ElementAt(1).Discount == 50 &&
+                x.Items.ElementAt(2).Total == 12000 &&
+                x.Items.ElementAt(2).Discount == 3000
             ), cancellationToken).Returns(saleWithItems);
 
             // Act
@@ -86,7 +109,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Equal(command.SaleNumber, response.SaleNumber);
             Assert.True(response.Date <= dateUtcNow);
             Assert.Equal(command.Cancelled, response.Cancelled);
-            Assert.Equal(command.Items.Sum(x => x.Quantity * x.ProductPrice), response.TotalAmount);
+            Assert.Equal(12470, response.TotalAmount);
 
             await _saleRepository.Received(1).CreateAsync(Arg.Is<Sale>(x =>
                 x.Cancelled == command.Cancelled &&
@@ -95,7 +118,14 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 x.Customer.CustomerId == command.CustomerId &&
                 x.Customer.CustomerName == command.CustomerName &&
                 x.Branch.BranchId == command.BranchId &&
-                x.Branch.BranchName == command.BranchName
+                x.Branch.BranchName == command.BranchName &&
+                x.Items.Count == command.Items.Count &&
+                x.Items.First().Total == 20 &&
+                x.Items.First().Discount == 0 &&
+                x.Items.ElementAt(1).Total == 450 &&
+                x.Items.ElementAt(1).Discount == 50 &&
+                x.Items.ElementAt(2).Total == 12000 &&
+                x.Items.ElementAt(2).Discount == 3000
             ), cancellationToken);
 
             _saleRepository.VerifyNoOtherCalls(1);

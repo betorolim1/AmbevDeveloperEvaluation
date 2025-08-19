@@ -51,7 +51,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.NotNull(result);
             Assert.Equal(command.Id, result.Id);
             Assert.Equal(command.Cancelled, result.Cancelled);
-            Assert.Equal(command.Items.Sum(x => x.Quantity * x.ProductPrice), sale.TotalAmount);
+            Assert.Equal(12470, sale.TotalAmount);
 
             await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
 
@@ -59,7 +59,13 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 x.Id == command.Id &&
                 x.Cancelled == command.Cancelled &&
                 x.Items.Count == command.Items.Count &&
-                x.Items.All(i => command.Items.Any(c => c.ProductId == i.Product.ProductId && c.Quantity == i.Quantity))
+                x.Items.All(i => command.Items.Any(c => c.ProductId == i.Product.ProductId && c.Quantity == i.Quantity)) &&
+                x.Items.First().Total == 20 &&
+                x.Items.First().Discount == 0 &&
+                x.Items.ElementAt(1).Total == 450 &&
+                x.Items.ElementAt(1).Discount == 50 &&
+                x.Items.ElementAt(2).Total == 12000 &&
+                x.Items.ElementAt(2).Discount == 3000
             ), cancellationToken);
 
             _saleRepository.VerifyNoOtherCalls(2);
