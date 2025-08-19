@@ -1,6 +1,8 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Domain.Validation.Helper;
 using AutoMapper;
 using FluentValidation;
@@ -11,12 +13,14 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
     public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleResult>
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
-        public UpdateSaleHandler(ISaleRepository saleRepository, IMapper mapper)
+        public UpdateSaleHandler(ISaleRepository saleRepository, IMapper mapper, IEventPublisher eventPublisher)
         {
             _saleRepository = saleRepository;
             _mapper = mapper;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<UpdateSaleResult> Handle(UpdateSaleCommand command, CancellationToken cancellationToken)
@@ -43,7 +47,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 
             await _saleRepository.UpdateAsync(sale, cancellationToken);
 
-            // TODO: Event Publishing
+            await _eventPublisher.PublishAsync(new SaleModifiedEvent(sale.Id), cancellationToken);
 
             return _mapper.Map<UpdateSaleResult>(sale);
         }
