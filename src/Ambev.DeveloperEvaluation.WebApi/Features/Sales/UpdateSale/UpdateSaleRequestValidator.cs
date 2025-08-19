@@ -6,6 +6,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale
     {
         public UpdateSaleRequestValidator()
         {
+            RuleFor(c => c.Items).NotNull().Must(items => items.Count > 0);
             RuleForEach(x => x.Items).ChildRules(item =>
             {
                 item.RuleFor(i => i.ProductId).NotEmpty();
