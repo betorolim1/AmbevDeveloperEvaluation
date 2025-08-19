@@ -1,7 +1,8 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData;
 using Xunit;
 
-namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
+namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
 {
     public class SaleItemTests
     {

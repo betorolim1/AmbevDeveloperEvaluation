@@ -6,25 +6,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
 {
     public class SaleTests
     {
-        [Fact(DisplayName = "Sale should be created with valid data")]
-        public void Given_ValidSaleData_When_Created_Then_ShouldReturnValidSale()
-        {
-            var dateNow = DateTime.Now;
-
-            var sale = new Sale(saleNumber: "1234567890123",
-                                date: dateNow,
-                                customer: CustomerExternalIdentityTestData.GenerateValidCustomerExternalIdentity(),
-                                branch: BranchExternalIdentityTestData.GenerateValidBranchExternalIdentity());
-
-            Assert.NotNull(sale);
-            Assert.NotEqual(Guid.Empty, sale.Id);
-            Assert.NotEmpty(sale.SaleNumber);
-            Assert.Equal(dateNow.Date, sale.Date.Date);
-            Assert.NotNull(sale.Customer);
-            Assert.NotNull(sale.Branch);
-            Assert.False(sale.Cancelled);
-        }
-
         [Fact(DisplayName = "Sale should return correct total amount after adding items")]
         public void Given_SaleWithItems_When_CalculatingTotal_Then_ShouldReturnCorrectTotalAmount()
         {
@@ -46,17 +27,35 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             Assert.Equal(40.0m, totalAmount);
         }
 
-        [Fact(DisplayName = "Sale should be cancelled correctly")]
-        public void Given_Sale_When_Cancelled_Then_ShouldSetCancelledFlag()
+        [Fact(DisplayName = "Sale should validate correctly with valid data")]
+        public void Given_ValidSaleData_When_Validated_Then_ShouldReturnValidResult()
         {
             // Arrange
             var sale = SaleTestData.GenerateValidSale();
 
             // Act
-            sale.Cancel();
+            var validationResult = sale.Validate();
 
             // Assert
-            Assert.True(sale.Cancelled);
+            Assert.True(validationResult.IsValid);
+            Assert.Empty(validationResult.Errors);
+        }
+
+        [Fact(DisplayName = "Sale should clear items correctly")]
+        public void Given_SaleWithItems_When_Cleared_Then_ShouldRemoveAllItems()
+        {
+            // Arrange
+            var sale = SaleTestData.GenerateValidSale();
+
+            var product = ProductExternalIdentityTestData.GenerateValidProductExternalIdentity();
+
+            sale.AddItem(product, 1);
+
+            // Act
+            sale.ClearItems();
+
+            // Assert
+            Assert.Empty(sale.Items);
         }
     }
 }
