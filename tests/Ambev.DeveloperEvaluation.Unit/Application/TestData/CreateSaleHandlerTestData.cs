@@ -17,8 +17,22 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
                 {
                     ProductId = f.Random.Guid(),
                     ProductName = f.Commerce.ProductName(),
-                    ProductPrice = f.Finance.Amount(1, 100),
-                    Quantity = f.Random.Int(1, 20)
+                    ProductPrice = 10,
+                    Quantity = 2
+                },
+                new CreateSaleItemCommand
+                {
+                    ProductId = f.Random.Guid(),
+                    ProductName = f.Commerce.ProductName(),
+                    ProductPrice = 100,
+                    Quantity = 5
+                },
+                new CreateSaleItemCommand
+                {
+                    ProductId = f.Random.Guid(),
+                    ProductName = f.Commerce.ProductName(),
+                    ProductPrice = 1000,
+                    Quantity = 15
                 }
             })
             .RuleFor(u => u.Cancelled, f => f.Random.Bool());
