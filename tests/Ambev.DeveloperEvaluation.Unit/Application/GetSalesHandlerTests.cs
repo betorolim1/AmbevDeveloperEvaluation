@@ -1,11 +1,11 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
 using AutoMapper;
-using FluentValidation;
 using NSubstitute;
 using Xunit;
 
@@ -44,7 +44,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             };
 
             // Act
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, cancellationToken));
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _handler.Handle(command, cancellationToken));
 
             // Assert
             Assert.NotNull(exception);
@@ -65,7 +65,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             };
 
             // Act
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, cancellationToken));
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _handler.Handle(command, cancellationToken));
 
             // Assert
             Assert.NotNull(exception);

@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Validation.Helper;
 using AutoMapper;
@@ -22,7 +23,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         {
             var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
             if (sale is null)
-                throw new ValidationException("Sale not found");
+                throw new BusinessException("Sale not found");
 
             sale.Cancelled = command.Cancelled;
 
