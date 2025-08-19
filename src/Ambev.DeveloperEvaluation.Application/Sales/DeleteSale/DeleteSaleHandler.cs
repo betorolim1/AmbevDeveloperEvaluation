@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Logger.Sale;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using MediatR;
@@ -26,6 +27,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
                 throw new BusinessException("Sale not found");
 
             await _saleRepository.DeleteAsync(sale, cancellationToken);
+
+            var saleDeleteEvent = new SaleDeleteEvent(SaleId: sale.Id);
+
+            SaleEventLogger.LogSaleDeleted(saleDeleteEvent);
 
             await _eventPublisher.PublishAsync(new SaleDeleteEvent(sale.Id));
         }

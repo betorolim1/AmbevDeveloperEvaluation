@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
 using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Logger.Sale;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Domain.Validation.Helper;
@@ -46,6 +47,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
                 throw new ValidationException(ValidationHelper.GetValidationFailures(saleValidationResult));
 
             await _saleRepository.UpdateAsync(sale, cancellationToken);
+
+            var saleModifiedEvent = new SaleModifiedEvent(SaleId: sale.Id);
+
+            SaleEventLogger.LogSaleModified(saleModifiedEvent);
 
             await _eventPublisher.PublishAsync(new SaleModifiedEvent(sale.Id), cancellationToken);
 
