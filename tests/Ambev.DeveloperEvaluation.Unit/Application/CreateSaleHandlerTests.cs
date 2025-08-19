@@ -36,6 +36,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         public async Task Handle_ValidRequest_ReturnsSuccessResponse()
         {
             // Arrange
+            var dateUtcNow = DateTime.UtcNow;
+
             var cancellationToken = CancellationToken.None;
 
             var command = CreateSaleHandlerTestData.GenerateValidCommand();
@@ -50,7 +52,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             var saleWithItems = new Sale
             {
                 SaleNumber = command.SaleNumber,
-                Date = command.Date,
                 Customer =
                     new CustomerExternalIdentity
                     {
@@ -69,7 +70,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
 
             _saleRepository.CreateAsync(Arg.Is<Sale>(x =>
                 x.Cancelled == command.Cancelled &&
-                x.Date == command.Date &&
+                x.Date >= dateUtcNow &&
                 x.SaleNumber == command.SaleNumber &&
                 x.Customer.CustomerId == command.CustomerId &&
                 x.Customer.CustomerName == command.CustomerName &&
@@ -83,13 +84,13 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             Assert.NotNull(response);
             Assert.Equal(command.SaleNumber, response.SaleNumber);
-            Assert.Equal(command.Date, response.Date);
+            Assert.True(response.Date <= dateUtcNow);
             Assert.Equal(command.Cancelled, response.Cancelled);
             Assert.Equal(command.Items.Sum(x => x.Quantity * x.ProductPrice), response.TotalAmount);
 
             await _saleRepository.Received(1).CreateAsync(Arg.Is<Sale>(x =>
                 x.Cancelled == command.Cancelled &&
-                x.Date == command.Date &&
+                x.Date >= dateUtcNow &&
                 x.SaleNumber == command.SaleNumber &&
                 x.Customer.CustomerId == command.CustomerId &&
                 x.Customer.CustomerName == command.CustomerName &&

@@ -36,6 +36,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 sale.AddItem(product, item.Quantity);
             }
 
+            sale.Date = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+
             var saleValidationResult = sale.Validate();
 
             if (!saleValidationResult.IsValid)

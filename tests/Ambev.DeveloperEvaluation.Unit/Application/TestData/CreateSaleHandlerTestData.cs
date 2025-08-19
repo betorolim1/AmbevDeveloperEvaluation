@@ -7,7 +7,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
     {
         private static readonly Faker<CreateSaleCommand> createSaleHandlerFaker = new Faker<CreateSaleCommand>()
             .RuleFor(u => u.SaleNumber, f => f.Commerce.Ean13())
-            .RuleFor(u => u.Date, f => f.Date.Past(1))
             .RuleFor(u => u.CustomerId, f => f.Random.Guid())
             .RuleFor(u => u.CustomerName, f => f.Name.FullName())
             .RuleFor(u => u.BranchId, f => f.Random.Guid())

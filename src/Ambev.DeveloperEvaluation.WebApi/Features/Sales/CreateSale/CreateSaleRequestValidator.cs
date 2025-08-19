@@ -8,8 +8,6 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale
         {
             RuleFor(x => x.SaleNumber).NotEmpty();
 
-            RuleFor(x => x.Date).NotEmpty();
-
             RuleFor(x => x.CustomerId).NotEmpty();
 
             RuleFor(x => x.CustomerName).NotEmpty();
