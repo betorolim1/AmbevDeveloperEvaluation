@@ -1,6 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
+using FluentValidation;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
 {

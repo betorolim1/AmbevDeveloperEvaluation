@@ -31,7 +31,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         }
 
         [Fact(DisplayName = "Given not found sale Then throws ValidationException")]
-        public async Task GivenNotFoundSale_ThenThrowsValidationException()
+        public async Task Handle_GivenNotFoundSale_ThenThrowsValidationException()
         {
             // Arrange
             var cancellationToken = CancellationToken.None;
@@ -48,7 +48,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         }
 
         [Fact(DisplayName = "Given found sale Then returns GetSaleByIdResult")]
-        public async Task GivenFoundSale_ThenReturnsGetSaleByIdResult()
+        public async Task Handle_GivenFoundSale_ThenReturnsGetSaleByIdResult()
         {
             // Arrange
             var cancellationToken = CancellationToken.None;
