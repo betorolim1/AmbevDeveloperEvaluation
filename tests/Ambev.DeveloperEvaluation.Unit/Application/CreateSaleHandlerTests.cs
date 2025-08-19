@@ -1,7 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
 using AutoMapper;
@@ -14,6 +16,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
     public class CreateSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
         private readonly CreateSaleHandler _handler;
@@ -21,6 +24,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         public CreateSaleHandlerTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
+            _eventPublisher = Substitute.For<IEventPublisher>();
 
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -29,7 +33,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
 
             _mapper = configuration.CreateMapper();
 
-            _handler = new CreateSaleHandler(_saleRepository, _mapper);
+            _handler = new CreateSaleHandler(_saleRepository, _mapper, _eventPublisher);
         }
 
         [Fact(DisplayName = "Given valid sale data When creating sale Then returns success response")]
@@ -128,7 +132,12 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 x.Items.ElementAt(2).Discount == 3000
             ), cancellationToken);
 
+            await _eventPublisher.Received(1).PublishAsync(Arg.Is<SaleCreatedEvent>(x =>
+                x.SaleId == saleWithItems.Id),
+             cancellationToken);
+
             _saleRepository.VerifyNoOtherCalls(1);
+            _eventPublisher.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given invalid command data When creating sale Then throws validation exception")]
@@ -147,6 +156,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Contains("Validation failed", exception.Message, StringComparison.OrdinalIgnoreCase);
 
             _saleRepository.VerifyNoOtherCalls(0);
+            _eventPublisher.VerifyNoOtherCalls(0);
         }
     }
 }

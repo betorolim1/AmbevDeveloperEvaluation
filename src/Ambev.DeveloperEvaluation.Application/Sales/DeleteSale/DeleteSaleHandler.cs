@@ -27,7 +27,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
 
             await _saleRepository.DeleteAsync(sale, cancellationToken);
 
-            await _eventPublisher.PublishAsync(new SaleCancelledEvent(sale.Id));
+            await _eventPublisher.PublishAsync(new SaleDeleteEvent(sale.Id));
         }
     }
 }

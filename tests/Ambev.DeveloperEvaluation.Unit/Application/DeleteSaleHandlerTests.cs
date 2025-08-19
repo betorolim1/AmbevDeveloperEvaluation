@@ -1,7 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
 using NSubstitute;
@@ -12,14 +14,16 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
     public class DeleteSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
 
         private readonly DeleteSaleHandler _handler;
 
         public DeleteSaleHandlerTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
+            _eventPublisher = Substitute.For<IEventPublisher>();
 
-            _handler = new DeleteSaleHandler(_saleRepository);
+            _handler = new DeleteSaleHandler(_saleRepository, _eventPublisher);
         }
 
         [Fact(DisplayName = "Given empty sale ID Then throws ValidationException")]
@@ -37,6 +41,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Contains("Sale ID cannot be empty.", exception.Message, StringComparison.OrdinalIgnoreCase);
 
             _saleRepository.VerifyNoOtherCalls(0);
+            _eventPublisher.VerifyNoOtherCalls(0);
         }
 
         [Fact(DisplayName = "Given not found sale Then throws ValidationException")]
@@ -58,6 +63,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
 
             _saleRepository.VerifyNoOtherCalls(1);
+            _eventPublisher.VerifyNoOtherCalls(0);
         }
 
         [Fact(DisplayName = "Given found sale Then deletes sale successfully")]
@@ -77,8 +83,12 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             await _saleRepository.Received(1).DeleteAsync(sale, cancellationToken);
             await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
+            await _eventPublisher.Received(1).PublishAsync(Arg.Is<SaleDeleteEvent>(x =>
+                x.SaleId == sale.Id),
+             cancellationToken);
 
             _saleRepository.VerifyNoOtherCalls(2);
+            _eventPublisher.VerifyNoOtherCalls(1);
         }
     }
 }
