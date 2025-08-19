@@ -1,5 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
-using FluentValidation;
+﻿using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
@@ -15,11 +15,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
 
         public async Task Handle(DeleteSaleCommand command, CancellationToken cancellationToken)        {
             if(command.Id == Guid.Empty)
-                throw new ValidationException("Sale ID cannot be empty.");
+                throw new BusinessException("Sale ID cannot be empty.");
 
             var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
             if (sale == null)
-                throw new ValidationException("Sale not found");
+                throw new BusinessException("Sale not found");
 
             await _saleRepository.DeleteAsync(sale, cancellationToken);
 

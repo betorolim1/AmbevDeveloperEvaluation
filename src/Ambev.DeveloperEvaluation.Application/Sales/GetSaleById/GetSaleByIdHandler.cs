@@ -1,6 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
+﻿using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.GetSaleById
@@ -20,7 +20,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSaleById
         {
             var sale = await _saleRepository.GetByIdAsync(request.Id, cancellationToken);
             if (sale == null)
-                throw new ValidationException("Sale not found");
+                throw new BusinessException("Sale not found");
 
             return _mapper.Map<GetSaleByIdResult>(sale);
         }

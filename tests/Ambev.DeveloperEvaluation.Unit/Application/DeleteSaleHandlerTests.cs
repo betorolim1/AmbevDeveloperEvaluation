@@ -1,10 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
-using FluentAssertions;
-using FluentValidation;
 using NSubstitute;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             var command = new DeleteSaleCommand { Id = Guid.Empty };
 
             // Act
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, cancellationToken));
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _handler.Handle(command, cancellationToken));
 
             // Assert
             Assert.NotNull(exception);
@@ -50,7 +49,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             _saleRepository.GetByIdAsync(command.Id, cancellationToken).Returns((Sale?)null);
 
             // Act
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, cancellationToken));
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _handler.Handle(command, cancellationToken));
 
             // Assert
             Assert.NotNull(exception);

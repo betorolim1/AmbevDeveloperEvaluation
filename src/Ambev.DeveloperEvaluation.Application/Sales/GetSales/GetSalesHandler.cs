@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Application.PageResult;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using FluentValidation;
@@ -23,10 +24,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSales
         public async Task<PagedResult<GetSalesResult>> Handle(GetSalesCommand request, CancellationToken cancellationToken)
         {
             if (request.PageNumber <= 0)
-                throw new ValidationException("Invalid PageNumber");
+                throw new BusinessException("Invalid PageNumber");
 
             if (request.PageSize <= 0 )
-                throw new ValidationException("Invalid PageSize");
+                throw new BusinessException("Invalid PageSize");
 
             var query = _saleRepository.Query();
 
