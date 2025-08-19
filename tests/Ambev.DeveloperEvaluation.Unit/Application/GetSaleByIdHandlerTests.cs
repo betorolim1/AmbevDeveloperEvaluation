@@ -2,6 +2,7 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
+using Ambev.DeveloperEvaluation.Unit.Helpers;
 using AutoMapper;
 using FluentValidation;
 using NSubstitute;
@@ -45,6 +46,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             Assert.NotNull(exception);
             Assert.Contains("Sale not found", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+            await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given found sale Then returns GetSaleByIdResult")]
@@ -85,6 +90,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Equal(sale.Items.First().Product.ProductId, result.Items.First().ProductId);
             Assert.Equal(sale.Items.First().Total, result.Items.First().Total);
             Assert.Equal(sale.Items.First().Discount, result.Items.First().Discount);
+
+            await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
     }
 }

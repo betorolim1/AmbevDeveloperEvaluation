@@ -18,7 +18,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Helpers
             {
                 throw new Exception(
                     $"Expected {expectedCalls} call(s), but was {calls.Count} call(s)\n" +
-                    "Details:\n" +
+                    "Calls:\n" +
                     string.Join("\n", calls.Select(c => c.GetMethodInfo().Name))
                 );
             }

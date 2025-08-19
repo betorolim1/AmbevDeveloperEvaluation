@@ -3,10 +3,10 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Entities.ExternalIdentities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
+using Ambev.DeveloperEvaluation.Unit.Helpers;
 using AutoMapper;
 using FluentValidation;
 using NSubstitute;
-using System.Threading;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Unit.Application
@@ -86,6 +86,18 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Equal(command.Date, response.Date);
             Assert.Equal(command.Cancelled, response.Cancelled);
             Assert.Equal(command.Items.Sum(x => x.Quantity * x.ProductPrice), response.TotalAmount);
+
+            await _saleRepository.Received(1).CreateAsync(Arg.Is<Sale>(x =>
+                x.Cancelled == command.Cancelled &&
+                x.Date == command.Date &&
+                x.SaleNumber == command.SaleNumber &&
+                x.Customer.CustomerId == command.CustomerId &&
+                x.Customer.CustomerName == command.CustomerName &&
+                x.Branch.BranchId == command.BranchId &&
+                x.Branch.BranchName == command.BranchName
+            ), cancellationToken);
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given invalid command data When creating sale Then throws validation exception")]
@@ -102,6 +114,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             Assert.NotNull(exception);
             Assert.Contains("Validation failed", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+            _saleRepository.VerifyNoOtherCalls(0);
         }
     }
 }

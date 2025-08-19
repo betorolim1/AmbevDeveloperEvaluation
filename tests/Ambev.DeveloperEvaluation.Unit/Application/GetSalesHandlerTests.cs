@@ -48,6 +48,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             Assert.NotNull(exception);
             Assert.Contains("Invalid PageNumber", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+            _saleRepository.VerifyNoOtherCalls(0);
         }
 
         [Fact(DisplayName = "Given invalid PageSize Then throws ValidationException")]
@@ -67,6 +69,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             // Assert
             Assert.NotNull(exception);
             Assert.Contains("Invalid PageSize", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+            _saleRepository.VerifyNoOtherCalls(0);
         }
 
         [Fact(DisplayName = "Given valid command data When getting sales Then returns paged result")]
@@ -99,6 +103,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Equal(command.PageNumber, result.CurrentPage);
             Assert.Equal(command.PageSize, result.PageSize);
             Assert.Equal(saleList.Count, result.TotalItems);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must filter by customer name Then returns filtered results")]
@@ -137,6 +145,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Single(result.Items);
             Assert.Equal(saleForFilter.Customer.CustomerName, result.Items.First().CustomerName);
             Assert.Equal(saleForFilter.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must filter by branch name Then returns filtered results")]
@@ -176,6 +188,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Single(result.Items);
             Assert.Equal(saleForFilter.Branch.BranchName, result.Items.First().BranchName);
             Assert.Equal(saleForFilter.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must filter by start date Then returns filtered results")]
@@ -217,6 +233,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Single(result.Items);
             Assert.Equal(saleForFilter.Date, result.Items.First().Date);
             Assert.Equal(saleForFilter.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must filter by end date Then returns filtered results")]
@@ -258,6 +278,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Single(result.Items);
             Assert.Equal(saleForFilter.Date, result.Items.First().Date);
             Assert.Equal(saleForFilter.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must filter by cancelled flag Then returns filtered results")]
@@ -297,6 +321,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.Single(result.Items);
             Assert.Equal(saleForFilter.Cancelled, result.Items.First().Cancelled);
             Assert.Equal(saleForFilter.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must order by date Then returns ordered results")]
@@ -337,6 +365,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.NotNull(result);
             Assert.Equal(2, result.Items.Count());
             Assert.Equal(saleForFilter2.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must order by sale number Then returns ordered results")]
@@ -377,6 +409,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.NotNull(result);
             Assert.Equal(2, result.Items.Count());
             Assert.Equal(saleForFilter1.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given valid sales found When must order by branch name Then returns ordered results")]
@@ -417,6 +453,10 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             Assert.NotNull(result);
             Assert.Equal(2, result.Items.Count());
             Assert.Equal(saleForFilter1.Id, result.Items.First().Id);
+
+            _saleRepository.Received(1).Query();
+
+            _saleRepository.VerifyNoOtherCalls(1);
         }
     }
 }
