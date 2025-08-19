@@ -1,7 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using Ambev.DeveloperEvaluation.Unit.Helpers;
 using AutoMapper;
@@ -13,6 +15,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
     public class UpdateSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
         private readonly UpdateSaleHandler _handler;
@@ -20,6 +23,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         public UpdateSaleHandlerTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
+            _eventPublisher = Substitute.For<IEventPublisher>();
 
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -28,7 +32,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
 
             _mapper = configuration.CreateMapper();
 
-            _handler = new UpdateSaleHandler(_saleRepository, _mapper);
+            _handler = new UpdateSaleHandler(_saleRepository, _mapper, _eventPublisher);
         }
 
         [Fact(DisplayName = "Given valid sale data When updating sale Then returns success response")]
@@ -68,7 +72,12 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
                 x.Items.ElementAt(2).Discount == 3000
             ), cancellationToken);
 
+            await _eventPublisher.Received(1).PublishAsync(Arg.Is<SaleModifiedEvent>(x =>
+                x.SaleId == sale.Id),
+             cancellationToken);
+
             _saleRepository.VerifyNoOtherCalls(2);
+            _eventPublisher.VerifyNoOtherCalls(1);
         }
 
         [Fact(DisplayName = "Given non-existing sale When updating sale Then throws ValidationException")]
@@ -90,6 +99,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             await _saleRepository.Received(1).GetByIdAsync(command.Id, cancellationToken);
 
             _saleRepository.VerifyNoOtherCalls(1);
+            _eventPublisher.VerifyNoOtherCalls(0);
         }
     }
 }

@@ -3,11 +3,15 @@ using Ambev.DeveloperEvaluation.Common.HealthChecks;
 using Ambev.DeveloperEvaluation.Common.Logging;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Rebus.Config;
+using Rebus.Routing.TypeBased;
+using Rebus.Transport.InMem;
 using Serilog;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
@@ -51,6 +55,11 @@ public class Program
             });
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            builder.Services.AddRebus(configure => configure
+                .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "developer-store-queue"))
+                .Routing(r => r.TypeBased().MapAssemblyOf<SaleCreatedEvent>("developer-store-queue"))
+            );
 
             var app = builder.Build();
             app.UseMiddleware<BusinessExceptionMiddleware>();

@@ -1,5 +1,7 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Exceptions;
+﻿using Ambev.DeveloperEvaluation.Domain.Events.Sale;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
@@ -7,10 +9,12 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
     public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand>
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IEventPublisher _eventPublisher;
 
-        public DeleteSaleHandler(ISaleRepository saleRepository)
+        public DeleteSaleHandler(ISaleRepository saleRepository, IEventPublisher eventPublisher)
         {
             _saleRepository = saleRepository;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task Handle(DeleteSaleCommand command, CancellationToken cancellationToken)        {
@@ -23,7 +27,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale
 
             await _saleRepository.DeleteAsync(sale, cancellationToken);
 
-            // TODO: Publish Event
+            await _eventPublisher.PublishAsync(new SaleDeleteEvent(sale.Id));
         }
     }
 }
