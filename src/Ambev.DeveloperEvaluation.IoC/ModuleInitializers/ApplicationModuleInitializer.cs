@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messaging;
+﻿using Ambev.DeveloperEvaluation.Application.Messaging;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +12,6 @@ public class ApplicationModuleInitializer : IModuleInitializer
     {
         builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 
-        builder.Services.AddScoped<IEventPublisher, LogEventPublisher>();
+        builder.Services.AddScoped<IEventPublisher, EventPublisher>();
     }
 }
