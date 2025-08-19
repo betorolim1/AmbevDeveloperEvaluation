@@ -61,6 +61,11 @@ public class Program
                 .Routing(r => r.TypeBased().MapAssemblyOf<SaleCreatedEvent>("developer-store-queue"))
             );
 
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
             var app = builder.Build();
             app.UseMiddleware<BusinessExceptionMiddleware>();
             app.UseMiddleware<ValidationExceptionMiddleware>();
